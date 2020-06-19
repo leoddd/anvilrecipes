@@ -1,0 +1,22 @@
+{
+  "type": "extendedsmithing:recipesmithing",
+
+  "input": {
+    "xp": 0,
+
+    "left": {
+      "item": "minecraft:iron_pickaxe"
+    },
+
+    "right": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+
+  "output": {
+    "refreshDurability": true,
+    "item": {
+      "item": "minecraft:iron_pickaxe"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+modLoader="javafml"
+loaderVersion="[31,)"
+
+[[mods]]
+modId="extendedsmithing"
+version="${file.jarVersion}"
+displayName="Extended Smithing"
+logoFile="extendedsmithing.png"
+authors="leod"
+description='''
+Enables recipe file support for the smithing interface, simple and complex.
+'''
+
+[[mods]]
+modId="tippedpicks"
+version="${file.jarVersion}"
+displayName="Tipped Pickaxes"
+logoFile="tippedpicks.png"
+authors="leod"
+description='''
+Upgrade a pickaxe's mining level, paying less materials than it normally would have cost.
+A tipped pickaxe keeps the original pickaxe's durability and requires the tip's material to repair.
+'''
