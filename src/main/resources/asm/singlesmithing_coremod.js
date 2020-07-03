@@ -27,8 +27,8 @@ function initializeCoreMod() {
 
                     if (instruction.getOpcode() == Opcodes.IFNE) {
                         print(instruction.label.getLabel().info);
-                        method.instructions.remove(instruction.previousInsn.previousInsn);
-                        method.instructions.remove(instruction.previousInsn);
+                        method.instructions.remove(instruction.getPrevious().getPrevious());
+                        method.instructions.remove(instruction.getPrevious());
                         method.instructions.remove(instruction);
 
                         transformed = true;
