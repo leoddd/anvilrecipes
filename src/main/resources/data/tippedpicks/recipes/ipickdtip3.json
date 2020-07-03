@@ -1,0 +1,21 @@
+{
+  "type": "extendedsmithing:additionsmithing",
+
+  "input": {
+    "xp": 0,
+
+    "left": {
+      "item": "minecraft:iron_pickaxe"
+    },
+
+    "right": {
+      "item": "minecraft:diamond"
+    }
+  },
+
+  "output": {
+    "item": {
+      "item": "minecraft:apple"
+    }
+  }
+}

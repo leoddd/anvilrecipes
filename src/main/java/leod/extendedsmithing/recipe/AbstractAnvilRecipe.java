@@ -1,4 +1,4 @@
-package leod.extendedsmithing;
+package leod.extendedsmithing.recipe;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -18,11 +18,9 @@ public abstract class AbstractAnvilRecipe implements IAnvilRecipe {
     protected final int leftAmount;
     protected final int rightAmount;
     protected final int xpCost;
-    protected final boolean refreshDurability;
-    protected final double repairAmount;
 
     public AbstractAnvilRecipe(ResourceLocation id, Ingredient left, Ingredient right, ItemStack out,
-                               int leftAmount, int rightAmount, int xpCost, boolean refreshDurability, double repairAmount) {
+                               int leftAmount, int rightAmount, int xpCost) {
         this.id = id;
 
         this.left = left;
@@ -31,8 +29,6 @@ public abstract class AbstractAnvilRecipe implements IAnvilRecipe {
         this.leftAmount = leftAmount;
         this.rightAmount = rightAmount;
         this.xpCost = xpCost;
-        this.refreshDurability = refreshDurability;
-        this.repairAmount = repairAmount;
     }
 
     @Nonnull
@@ -58,14 +54,6 @@ public abstract class AbstractAnvilRecipe implements IAnvilRecipe {
 
     public int getXpCost() {
         return this.xpCost;
-    }
-
-    public boolean getRefreshDurability() {
-        return this.refreshDurability;
-    }
-
-    public double getRepairAmount() {
-        return this.repairAmount;
     }
 
     @Nonnull

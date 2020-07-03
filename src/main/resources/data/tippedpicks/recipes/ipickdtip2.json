@@ -1,5 +1,5 @@
 {
-  "type": "extendedsmithing:recipesmithing",
+  "type": "extendedsmithing:additionsmithing",
 
   "input": {
     "xp": 0,
@@ -9,14 +9,13 @@
     },
 
     "right": {
-      "item": "minecraft:diamond"
+      "item": "minecraft:apple"
     }
   },
 
   "output": {
-    "refreshDurability": true,
     "item": {
-      "item": "minecraft:iron_pickaxe"
+      "item": "minecraft:diamond"
     }
   }
 }

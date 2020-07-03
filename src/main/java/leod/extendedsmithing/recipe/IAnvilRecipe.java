@@ -1,5 +1,6 @@
-package leod.extendedsmithing;
+package leod.extendedsmithing.recipe;
 
+import leod.extendedsmithing.ExtendedSmithing;
 import net.minecraft.block.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -37,8 +38,6 @@ public interface IAnvilRecipe extends IRecipe<IInventory> {
     int getRightAmount();
 
     int getXpCost();
-
-    boolean getRefreshDurability();
 
     double getRepairAmount();
 

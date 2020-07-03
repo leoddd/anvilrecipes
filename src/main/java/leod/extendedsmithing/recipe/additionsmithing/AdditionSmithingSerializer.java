@@ -1,6 +1,7 @@
-package leod.extendedsmithing;
+package leod.extendedsmithing.recipe.additionsmithing;
 
 import com.google.gson.JsonObject;
+import leod.extendedsmithing.ExtendedSmithing;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
@@ -13,19 +14,20 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class RecipeSmithingSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RecipeSmithingRecipe> {
+public class AdditionSmithingSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<AdditionSmithingRecipe> {
     public static final int DEFAULT_XP_COST = 0;
-    public static final boolean DEFAULT_REFRESH_DURABILITY = true;
-    public static final double DEFAULT_REPAIR_AMOUNT = 0.0d;
+    public static final double DEFAULT_REPAIR_AMOUNT = 0d;
+    public static final String DEFAULT_ACTION_REPAIR_COST = "clear";
+    public static final boolean DEFAULT_KEEP_ENCHANTMENTS = true;
 
-    RecipeSmithingSerializer(ResourceLocation registryName) {
-        this.setRegistryName(registryName);
+    public AdditionSmithingSerializer() {
+        this.setRegistryName(ExtendedSmithing.MODID, "additionsmithing");
     }
 
     @Nonnull
     @ParametersAreNonnullByDefault
     @Override
-    public RecipeSmithingRecipe read(ResourceLocation recipeId, JsonObject json) {
+    public AdditionSmithingRecipe read(ResourceLocation recipeId, JsonObject json) {
         if (!json.has("input") || !json.has("output")) {
             throw new IllegalStateException(
                     "Not a valid [" + ExtendedSmithing.MODID + "] JSON object."
@@ -59,43 +61,42 @@ public class RecipeSmithingSerializer extends ForgeRegistryEntry<IRecipeSerializ
 
         ItemStack out = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(outputJson, "item"));
 
-        boolean refreshDurability = DEFAULT_REFRESH_DURABILITY;
-        if (JSONUtils.hasField(outputJson, "refreshDurability")) {
-            refreshDurability = JSONUtils.getBoolean(outputJson, "refreshDurability");
-        }
-        double repairAmount = DEFAULT_REPAIR_AMOUNT;
-        if (JSONUtils.hasField(outputJson, "repairAmount")) {
-            repairAmount = JSONUtils.getFloat(outputJson, "repairAmount");
-        }
+        double repairAmount = JSONUtils.getFloat(outputJson, "repairAmount", (float) DEFAULT_REPAIR_AMOUNT);
+        String actionRepairCost = JSONUtils.getString(outputJson, "actionRepairCost", DEFAULT_ACTION_REPAIR_COST);
+        boolean keepEnchantments = JSONUtils.getBoolean(outputJson, "keepEnchantments", DEFAULT_KEEP_ENCHANTMENTS);
 
-        return new RecipeSmithingRecipe(recipeId, left, right, out, leftAmount, rightAmount, xpCost, refreshDurability, repairAmount);
+        return new AdditionSmithingRecipe(recipeId, left, right, out, leftAmount, rightAmount,
+                xpCost, repairAmount, actionRepairCost, keepEnchantments);
     }
 
     @ParametersAreNonnullByDefault
     @Override
-    public RecipeSmithingRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
+    public AdditionSmithingRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
         final Ingredient left = Ingredient.read(buffer);
         final Ingredient right = Ingredient.read(buffer);
         final ItemStack out = buffer.readItemStack();
         final int leftAmount = buffer.readInt();
         final int rightAmount = buffer.readInt();
         final int xpCost = buffer.readInt();
-        final boolean refreshDurability = buffer.readBoolean();
         final double repairAmount = buffer.readDouble();
+        final String actionRepairCost = buffer.readString();
+        final boolean keepEnchantments = buffer.readBoolean();
 
-        return new RecipeSmithingRecipe(recipeId, left, right, out, leftAmount, rightAmount, xpCost, refreshDurability, repairAmount);
+        return new AdditionSmithingRecipe(recipeId, left, right, out, leftAmount, rightAmount,
+                xpCost, repairAmount, actionRepairCost, keepEnchantments);
     }
 
     @ParametersAreNonnullByDefault
     @Override
-    public void write(PacketBuffer buffer, RecipeSmithingRecipe recipe) {
+    public void write(PacketBuffer buffer, AdditionSmithingRecipe recipe) {
         recipe.getLeft().write(buffer);
         recipe.getRight().write(buffer);
         buffer.writeItemStack(recipe.getRecipeOutput());
         buffer.writeInt(recipe.getLeftAmount());
         buffer.writeInt(recipe.getRightAmount());
         buffer.writeInt(recipe.getXpCost());
-        buffer.writeBoolean(recipe.getRefreshDurability());
         buffer.writeDouble(recipe.getRepairAmount());
+        buffer.writeString(recipe.getActionRepairCost());
+        buffer.writeBoolean(recipe.getKeepEnchantments());
     }
 }
