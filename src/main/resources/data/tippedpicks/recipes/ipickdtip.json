@@ -5,7 +5,8 @@
     "xp": 0,
 
     "left": {
-      "item": "minecraft:iron_pickaxe"
+      "item": "minecraft:diamond",
+      "count": 2
     }
   },
 

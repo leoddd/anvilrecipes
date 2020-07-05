@@ -44,8 +44,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO: Left slot consumes whole stacks still, regardless of intention.
-
 @Mod(ExtendedSmithing.MODID)
 public class ExtendedSmithing {
     public static final String MODID = "extendedsmithing";
@@ -154,7 +152,8 @@ public class ExtendedSmithing {
                                 Slot middleSlot = repairContainer.getSlot(1);
                                 if (!nameField.canWrite()) {
                                     newName = "";
-                                } else if (slotIdx == 2 && (!updatedStack.isEmpty()) && (!middleSlot.getHasStack())) {
+                                } else if (slotIdx == 2 && !updatedStack.isEmpty() && !middleSlot.getHasStack()
+                                        && updatedStack.getItem().equals(repairContainer.getSlot(0).getStack().getItem())) {
                                     newName = null;
                                 } else {
                                     newName = this.getBaseName();
@@ -163,18 +162,6 @@ public class ExtendedSmithing {
                                 if (newName != null && !nameField.getText().equals(newName)) {
                                     nameField.setText(newName);
                                 }
-
-                                // TODO: Think up a way to get SingleSmithing to work.
-//                                // aTODO: Make sure this update does not break the whole shebob.
-//                                if (slotIdx != 2 && repairContainer.getSlot(0).getHasStack() && !insideEventRepost) {
-//                                    printDebug("Posting placeholdered event");
-//                                    insideEventRepost = true;
-//                                    middleSlot.putStack(new ItemStack(() -> SingleSmithing.SINGLE_DUMMY_ITEM));
-//                                    ForgeHooks.onAnvilChange(repairContainer, repairContainer.getSlot(0).getStack(), middleSlot.getStack(),
-//                                            repairContainer.getSlot(2).inventory, newName, 0);
-//                                    middleSlot.putStack(ItemStack.EMPTY);
-//                                    insideEventRepost = false;
-//                                }
                             }
 
                             private String getBaseName() {
@@ -273,34 +260,46 @@ public class ExtendedSmithing {
             @Nonnull
             @ParametersAreNonnullByDefault
             public ItemStack onTake(PlayerEntity playerIn, ItemStack stack) {
-                // Implement ItemContainer returns.
-                // This way smithing with a filled bucket will return an empty one.
-                ItemStack[] slotContainers = new ItemStack[2];
+                // Modify the state of the inventory when the output is taken out.
+                // 1) Implement ContainerItems for the input slots, so they return the item they should on craft.
+                // 2) In vanilla, the whole stack is always consumed because actions are only performed on whole stacks.
+
+                // Memorize stacks before they're consumed.
+                ItemStack[] slotStacks = new ItemStack[2];
                 int[] amountsBefore = {0, 0};
                 for (int i = 0; i <= 1; ++i) {
                     Slot curSlot = repairContainer.getSlot(i);
-                    if (curSlot.getHasStack() && curSlot.getStack().hasContainerItem()) {
-                        slotContainers[i] = curSlot.getStack().getContainerItem();
-                        amountsBefore[i] = curSlot.getStack().getCount();
-                    }
+                    slotStacks[i] = curSlot.getStack().copy();
+                    amountsBefore[i] = curSlot.getStack().getCount();
                 }
 
+                // Vanilla method
                 ItemStack stackToReturn = this.getWrappedSlot().onTake(playerIn, stack);
 
+                // Give returns on the left stack.
+                IAnvilRecipe usedRecipe = findMatchingRecipe(slotStacks[0], slotStacks[1]);
+                if (usedRecipe != null) {
+                    ItemStack leftLeftoverStack = slotStacks[0].copy();
+                    leftLeftoverStack.setCount(slotStacks[0].getCount() - usedRecipe.getLeftAmount());
+                    repairContainer.getSlot(0).putStack(leftLeftoverStack);
+                }
+
+                // Return containers to the player.
                 for (int i = 0; i <= 1; ++i) {
-                    if (slotContainers[i] != null) {
+                    if (slotStacks[i].hasContainerItem()) {
                         Slot curSlot = repairContainer.getSlot(i);
+                        ItemStack slotContainer = slotStacks[i].getContainerItem();
 
                         int diffInAmounts = amountsBefore[i] - (curSlot.getHasStack() ? curSlot.getStack().getCount() : 0);
-                        if (slotContainers[i].isStackable()) {
-                            slotContainers[i].setCount(diffInAmounts);
+                        if (slotContainer.isStackable()) {
+                            slotContainer.setCount(diffInAmounts);
                         }
 
-                        for (int j = (slotContainers[i].isStackable() ? 1 : diffInAmounts); j > 0; --j) {
+                        for (int j = (slotContainer.isStackable() ? 1 : diffInAmounts); j > 0; --j) {
                             if (!curSlot.getHasStack()) {
-                                curSlot.putStack(slotContainers[i]);
+                                curSlot.putStack(slotContainer);
                             } else {
-                                playerIn.addItemStackToInventory(slotContainers[i]);
+                                playerIn.addItemStackToInventory(slotContainer);
                             }
                             this.getWrappedSlot().onSlotChanged();
                         }

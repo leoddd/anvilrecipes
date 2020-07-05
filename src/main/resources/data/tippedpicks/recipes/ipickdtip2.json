@@ -1,21 +1,18 @@
 {
-  "type": "extendedsmithing:additionsmithing",
+  "type": "extendedsmithing:singlesmithing",
 
   "input": {
     "xp": 0,
 
     "left": {
-      "item": "minecraft:iron_pickaxe"
-    },
-
-    "right": {
-      "item": "minecraft:apple"
+      "item": "minecraft:water_bucket"
     }
   },
 
   "output": {
     "item": {
-      "item": "minecraft:diamond"
+      "item": "minecraft:diamond",
+      "count": 2
     }
   }
 }
