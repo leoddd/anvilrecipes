@@ -1,4 +1,4 @@
-package leod.extendedsmithing.recipe;
+package leod.anvilrecipes.recipe;
 
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraftforge.event.RegistryEvent;

@@ -1,4 +1,4 @@
-package leod.extendedsmithing.recipe;
+package leod.anvilrecipes.recipe;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
 /**
  * Implements a constructor, most getters and a Serializer base for IAnvilRecipes.
  */
-public abstract class AbstractAnvilRecipe implements IAnvilRecipe {
+public abstract class AbstractAnvilRecipe implements IAnvilRecipeBase {
     protected final ResourceLocation id;
     protected final Ingredient left;
     protected final Ingredient right;

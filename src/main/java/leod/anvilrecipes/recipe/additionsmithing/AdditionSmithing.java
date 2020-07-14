@@ -1,6 +1,6 @@
-package leod.extendedsmithing.recipe.additionsmithing;
+package leod.anvilrecipes.recipe.additionsmithing;
 
-import leod.extendedsmithing.recipe.AbstractSmithingWrapper;
+import leod.anvilrecipes.recipe.AbstractSmithingWrapper;
 
 public class AdditionSmithing extends AbstractSmithingWrapper<AdditionSmithingSerializer> {
     public final static AdditionSmithingSerializer SERIALIZER = new AdditionSmithingSerializer();

@@ -1,6 +1,6 @@
-package leod.extendedsmithing.recipe;
+package leod.anvilrecipes.recipe;
 
-import leod.extendedsmithing.ExtendedSmithing;
+import leod.anvilrecipes.AnvilRecipeImplementation;
 import net.minecraft.block.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -14,11 +14,11 @@ import net.minecraftforge.event.AnvilUpdateEvent;
 
 import javax.annotation.Nonnull;
 
-public interface IAnvilRecipe extends IRecipe<IInventory> {
+public interface IAnvilRecipeBase extends IRecipe<IInventory> {
     IRecipeType<IRecipe<?>> RECIPETYPE = new IRecipeType<IRecipe<?>>() {
         @Override
         public String toString() {
-            return ExtendedSmithing.MODID + "smithing";
+            return AnvilRecipeImplementation.MODID + "smithing";
         }
     };
 
@@ -33,13 +33,14 @@ public interface IAnvilRecipe extends IRecipe<IInventory> {
 
     Ingredient getRight();
 
+    int DEFAULT_AMOUNT = 1;
     int getLeftAmount();
-
     int getRightAmount();
 
+    int DEFAULT_XP_COST = 0;
     int getXpCost();
 
-    double getRepairAmount();
+    float getRepairAmount();
 
     @Nonnull
     ResourceLocation getId();

@@ -1,0 +1,18 @@
+{
+  "type": "anvilrecipes:wildcardsmithing",
+
+  "input": {
+    "xp": 0,
+
+    "right": {
+      "item": "minecraft:golden_apple"
+    }
+  },
+
+  "output": {
+    "newEnchantments": {
+      "minecraft:unbreaking": 2
+    },
+    "repairAction": "clear"
+  }
+}
