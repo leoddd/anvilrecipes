@@ -132,3 +132,6 @@ Negative values damage the item instead. However, the result will never have les
 This recipe crushes blaze rods into 5 blaze powder, instead of the usual 2. In exchange, it costs 2 whole levels of xp.
 
 It's a lot simpler than the above examples, because not all recipes have to be a headache to understand.
+
+# Todo
+- JEI Integration
