@@ -17,6 +17,7 @@ function initializeCoreMod() {
 
             transformer: function(method)
             {
+                var finishedTransforming = false;
                 var transforms = 0;
                 var newInstructions = new InsnList();
 
@@ -28,55 +29,63 @@ function initializeCoreMod() {
                 {
                     var instruction = method.instructions.get(i);
 
+                    // Find the first IFNE, which is the one on line 155.
                     if (transforms == 0 &&
-                        instruction.getType() == AbstractInsnNode.LINE &&
-                        instruction.line == 155)
+                        instruction.getOpcode() == Opcodes.IFNE)
                     {
-                        var newInstructions = new InsnList();
+                        var theAload = instruction.getPrevious().getPrevious()
+                        if (theAload.getOpcode() == Opcodes.ALOAD) {
+                            var newInstructions = new InsnList();
 
-                        newInstructions.add(new JumpInsnNode(Opcodes.GOTO, forwardLabel));
-                        newInstructions.add(backLabel);
+                            newInstructions.add(new JumpInsnNode(Opcodes.GOTO, forwardLabel));
+                            newInstructions.add(backLabel);
 
-                        method.instructions.insert(instruction, newInstructions);
+                            method.instructions.insertBefore(theAload, newInstructions);
+                            i += newInstructions.size();
 
-                        transforms = 1;
+                            transforms = 1;
+                        }
                     }
+
                     else if (transforms == 1 &&
-                        instruction.getType() == AbstractInsnNode.LINE &&
-                        instruction.line == 156)
+                            instruction.getOpcode() == Opcodes.ALOAD)
                     {
                         var newInstructions = new InsnList();
 
                         newInstructions.add(new JumpInsnNode(Opcodes.GOTO, doneLabel));
                         newInstructions.add(forwardLabel);
 
-                        method.instructions.insert(instruction, newInstructions);
-
-                        for (var j = i; j < method.instructions.size(); ++j)
-                        {
-                            var branchBack = method.instructions.get(j);
-
-                            if (branchBack.getOpcode() == Opcodes.IFNE)
-                            {
-                                branchBack.label = backLabel;
-                                break;
-                            }
-                        }
+                        method.instructions.insertBefore(instruction, newInstructions);
+                        i += newInstructions.size();
 
                         transforms = 2;
                     }
+
                     else if (transforms == 2 &&
-                        instruction.getType() == AbstractInsnNode.LINE &&
-                        instruction.line == 157)
+                            instruction.getOpcode() == Opcodes.IFNE)
                     {
-                        method.instructions.insert(instruction, doneLabel);
+                        instruction.label = backLabel;
 
                         transforms = 3;
+                    }
+
+                    else if (transforms == 3 &&
+                            instruction.getType() == AbstractInsnNode.LABEL)
+                    {
+                        method.instructions.insert(instruction, doneLabel);
+                        i++;
+
+                        transforms = 4;
+                    }
+
+                    else if (transforms == 4)
+                    {
+                        finishedTransforming = true;
                         break;
                     }
                 }
 
-                if (transforms == 3) {
+                if (finishedTransforming) {
                     print("[extendedsmithing] Transformed RepairContainer");
                 } else {
                     print("[extendedsmithing] Failed to transform RepairContainer");

@@ -3,20 +3,10 @@ loaderVersion="[31,)"
 
 [[mods]]
 modId="anvilrecipes"
-version="${file.jarVersion}"
+version="1.0.0"
 displayName="Anvil Recipes"
 logoFile="anvilrecipes.png"
 authors="leod"
 description='''
 Implements "additionsmithing" (combining two items), "singlesmithing" (refining a single item) and "wildcardsmithing" (combining any item with a certain material) recipes for the Anvil.
-'''
-
-[[mods]]
-modId="extendedsmithing"
-version="${file.jarVersion}"
-displayName="Extended Smithing"
-logoFile="extendedsmithing.png"
-authors="leod"
-description='''
-Extends the vanilla anvil mechanics by adding new items, tools, blocks and machines related to it.
 '''

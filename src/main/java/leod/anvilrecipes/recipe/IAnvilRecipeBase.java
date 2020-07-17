@@ -34,10 +34,13 @@ public interface IAnvilRecipeBase extends IRecipe<IInventory> {
     Ingredient getRight();
 
     int DEFAULT_AMOUNT = 1;
+
     int getLeftAmount();
+
     int getRightAmount();
 
     int DEFAULT_XP_COST = 0;
+
     int getXpCost();
 
     float getRepairAmount();

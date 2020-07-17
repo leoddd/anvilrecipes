@@ -62,7 +62,7 @@ public class AdditionSmithingRecipe extends AbstractAnvilRecipe
         applyEnchantments(leftStack, output);
         applyRefineAll(leftStack, output);
 
-        int finalXpCost = this.getXpCost();
+        int finalXpCost = this.getXpCost() + leftStack.getRepairCost();
         if (renameStack(leftStack, output, event.getName())) ++finalXpCost;
 
         if (!output.equals(leftStack, false)) {

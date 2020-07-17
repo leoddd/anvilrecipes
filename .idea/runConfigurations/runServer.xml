@@ -5,12 +5,12 @@
     <option name="VM_PARAMETERS" value="-Dforge.logging.console.level=debug -Dforge.logging.markers=SCAN,REGISTRIES,REGISTRYDUMP"/>
     <option name="PROGRAM_PARAMETERS" value=""/>
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$\run"/>
-    <module name="AnvilProject.main"/>
+    <module name="AnvilRecipes.main"/>
     <envs>
-      <env name="MOD_CLASSES" value="extendedsmithing%%$PROJECT_DIR$\build\resources\main;extendedsmithing%%$PROJECT_DIR$\build\classes\java\main"/>
-      <env name="MCP_MAPPINGS" value="snapshot_20200225-1.15.1"/>
-      <env name="MCP_VERSION" value="20200414.225201"/>
-      <env name="FORGE_VERSION" value="31.1.74"/>
+      <env name="MOD_CLASSES" value="anvilrecipes%%$PROJECT_DIR$\build\resources\main;anvilrecipes%%$PROJECT_DIR$\build\classes\java\main"/>
+      <env name="MCP_MAPPINGS" value="snapshot_20200514-1.15.1"/>
+      <env name="MCP_VERSION" value="20200515.085601"/>
+      <env name="FORGE_VERSION" value="31.2.31"/>
       <env name="FORGE_GROUP" value="net.minecraftforge"/>
       <env name="target" value="fmluserdevserver"/>
       <env name="MC_VERSION" value="1.15.2"/>

@@ -53,7 +53,7 @@ public class SingleSmithingRecipe extends AbstractAnvilRecipe
         applyRepairAction(leftStack, output);
         applyEnchantments(leftStack, output);
 
-        int finalXpCost = this.getXpCost();
+        int finalXpCost = this.getXpCost() + leftStack.getRepairCost();
         if (renameStack(leftStack, output, event.getName())) ++finalXpCost;
 
         if (!output.equals(leftStack, false)) {

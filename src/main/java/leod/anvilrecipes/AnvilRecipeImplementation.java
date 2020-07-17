@@ -40,8 +40,6 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -58,13 +56,6 @@ public class AnvilRecipeImplementation {
     public final IEventBus MODBUS = FMLJavaModLoadingContext.get().getModEventBus();
 
     public RecipeManager recipeManager = null;
-
-    public static final boolean SHOW_DEBUG = true;
-
-    public static void printDebug(String msg) {
-        if (!SHOW_DEBUG) return;
-        LogManager.getLogger(AnvilRecipeImplementation.MODID).log(Level.WARN, msg);
-    }
 
     public AnvilRecipeImplementation() {
         // Registration and Setup.
@@ -87,17 +78,13 @@ public class AnvilRecipeImplementation {
         @SubscribeEvent
         @OnlyIn(Dist.DEDICATED_SERVER)
         public void afterServerStart(FMLServerStartedEvent event) {
-            printDebug("Memorizing Server RecipeManager");
             recipeManager = event.getServer().getRecipeManager();
-            printDebug("Manager: " + recipeManager);
         }
 
         @SubscribeEvent
         @OnlyIn(Dist.CLIENT)
         public void onRecipesUpdated(RecipesUpdatedEvent event) {
-            printDebug("Memorizing Client RecipeManager");
             recipeManager = event.getRecipeManager();
-            printDebug("Manager: " + recipeManager);
         }
     }
 
@@ -224,7 +211,6 @@ public class AnvilRecipeImplementation {
             IAnvilRecipeBase cachedRecipe = CACHE.getRecipeByItems(left.getItem(), right.getItem());
             if (cachedRecipe != null && cachedRecipe.matchesItemStacks(left, right)) {
                 matchingRecipe = cachedRecipe;
-                printDebug("Found a cached matching recipe: " + matchingRecipe);
             }
 
             // If not, search for one in the entire recipe database.
@@ -234,7 +220,6 @@ public class AnvilRecipeImplementation {
                 // Cache this recipe together with the used items if it matches anything.
                 if (matchingRecipe != null) {
                     CACHE.cacheRecipe(left.getItem(), right.getItem(), matchingRecipe);
-                    printDebug("Cached recipe: " + matchingRecipe);
                 }
             }
 
@@ -269,10 +254,6 @@ public class AnvilRecipeImplementation {
                 // Modify the state of the inventory when the output is taken out.
                 // 1) Implement ContainerItems for the input slots, so they return the item they should on craft.
                 // 2) In vanilla, the whole stack is always consumed because actions are only performed on whole stacks.
-
-                if (!playerIn.getEntityWorld().isRemote) {
-                    printDebug("server thread");
-                }
 
                 // Memorize stacks before they're consumed.
                 ItemStack[] slotStacks = new ItemStack[2];
@@ -321,8 +302,7 @@ public class AnvilRecipeImplementation {
                         IAnvilCanOverrideContainers overrideContainerRecipe = (IAnvilCanOverrideContainers) usedRecipe;
                         if (i == 0 && overrideContainerRecipe.hasLeftContainerOverride()) {
                             itemContainer = overrideContainerRecipe.getLeftContainerOverride().copy();
-                        }
-                        else if (i == 1 && overrideContainerRecipe.hasRightContainerOverride()) {
+                        } else if (i == 1 && overrideContainerRecipe.hasRightContainerOverride()) {
                             itemContainer = overrideContainerRecipe.getRightContainerOverride().copy();
                         }
                     }
@@ -350,7 +330,7 @@ public class AnvilRecipeImplementation {
                             for (int j = (itemContainer.isStackable() ? 1 : diffInAmounts); j > 0; --j) {
                                 if (!curSlot.getHasStack()) {
                                     curSlot.putStack(itemContainer);
-                                } else if (!playerIn.inventory.addItemStackToInventory(itemContainer)){
+                                } else if (!playerIn.inventory.addItemStackToInventory(itemContainer)) {
                                     playerIn.dropItem(itemContainer, true);
                                 }
 
@@ -376,11 +356,9 @@ public class AnvilRecipeImplementation {
 
                 if (anvilRecipe.matchesItemStacks(left, right)) {
                     matchingRecipe = anvilRecipe;
-                    printDebug("[✔] findMatchingRecipe(" + Item.getIdFromItem(left.getItem()) + "," + Item.getIdFromItem(right.getItem()) + ") found a recipe: " + matchingRecipe);
                     break;
                 }
             }
-            printDebug("[x] findMatchingRecipe(" + Item.getIdFromItem(left.getItem()) + "," + Item.getIdFromItem(right.getItem()) + ") did not find a recipe.");
         }
 
         return matchingRecipe;

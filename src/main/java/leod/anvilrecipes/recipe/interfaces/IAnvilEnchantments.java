@@ -99,8 +99,7 @@ public interface IAnvilEnchantments {
                             enchEntry.getValue().getAsInt()
                     );
                 }
-            }
-            catch (ClassCastException e) {
+            } catch (ClassCastException e) {
                 return new EnchantmentMap();
             }
 

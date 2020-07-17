@@ -5,5 +5,6 @@ public interface IAnvilCanKeepMaterial {
     int DEFAULT_DAMAGE_TICKS = 0;
 
     boolean getKeepMaterial();
+
     int getMaterialDamageTicks();
 }
