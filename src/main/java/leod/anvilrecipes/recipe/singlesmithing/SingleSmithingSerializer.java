@@ -15,8 +15,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
