@@ -86,9 +86,9 @@ function initializeCoreMod() {
                 }
 
                 if (finishedTransforming) {
-                    print("[extendedsmithing] Transformed RepairContainer");
+                    print("[anvilrecipes] Transformed RepairContainer");
                 } else {
-                    print("[extendedsmithing] Failed to transform RepairContainer");
+                    print("[anvilrecipes] Failed to transform RepairContainer");
                 }
 
                 return method;
