@@ -141,4 +141,4 @@ This recipe crushes blaze rods into 5 blaze powder, instead of the usual 2. In e
 It's a lot simpler than the above examples, because not all recipes have to be a headache to understand.
 
 # Todo
-- JEI Integration
+- Datagen
