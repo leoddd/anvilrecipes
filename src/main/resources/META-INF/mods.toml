@@ -3,7 +3,7 @@ loaderVersion="[31,)"
 
 [[mods]]
 modId="anvilrecipes"
-version="1.0.1"
+version="1.1"
 displayName="Anvil Recipes"
 logoFile="anvilrecipes.png"
 authors="leod"
