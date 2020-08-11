@@ -5,6 +5,7 @@ import leod.anvilrecipes.AnvilRecipeImplementation;
 import leod.anvilrecipes.recipe.IAnvilRecipeBase;
 import leod.anvilrecipes.recipe.interfaces.*;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipe;
@@ -42,6 +43,12 @@ public class WildcardSmithingSerializer extends ForgeRegistryEntry<IRecipeSerial
         int xpCost = JSONUtils.getInt(inputJson, "xp", IAnvilRecipeBase.DEFAULT_XP_COST);
         boolean refineAll = JSONUtils.getBoolean(inputJson, "refineAll", IAnvilCanRefineAll.DEFAULT_REFINE_ALL);
 
+        Ingredient left;
+        if (inputJson.has("left")) {
+            left = Ingredient.deserialize(JSONUtils.getJsonObject(inputJson, "left"));
+        } else {
+            left = Ingredient.fromItems(() -> Items.AIR);
+        }
         JsonObject rightObject = JSONUtils.getJsonObject(inputJson, "right");
         Ingredient right = Ingredient.deserialize(rightObject);
 
@@ -62,13 +69,14 @@ public class WildcardSmithingSerializer extends ForgeRegistryEntry<IRecipeSerial
         IAnvilEnchantments.EnchantmentMap newEnchantments = IAnvilEnchantments.EnchantmentMap.read(JSONUtils.getJsonObject(outputJson, "newEnchantments", new JsonObject()));
 
 
-        return new WildcardSmithingRecipe(recipeId, right, rightAmount, xpCost, keepMaterial, materialDamageTicks,
+        return new WildcardSmithingRecipe(recipeId, left, right, rightAmount, xpCost, keepMaterial, materialDamageTicks,
                 leftContainer, rightContainer, repairAmount, repairAction, refineAll, keepEnchantments, newEnchantments);
     }
 
     @ParametersAreNonnullByDefault
     @Override
     public WildcardSmithingRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
+        final Ingredient left = Ingredient.read(buffer);
         final Ingredient right = Ingredient.read(buffer);
         final int rightAmount = buffer.readInt();
         final int xpCost = buffer.readInt();
@@ -82,13 +90,14 @@ public class WildcardSmithingSerializer extends ForgeRegistryEntry<IRecipeSerial
         final boolean keepEnchantments = buffer.readBoolean();
         final IAnvilEnchantments.EnchantmentMap newEnchantments = IAnvilEnchantments.EnchantmentMap.read(buffer);
 
-        return new WildcardSmithingRecipe(recipeId, right, rightAmount, xpCost, keepMaterial, materialDamageTicks,
+        return new WildcardSmithingRecipe(recipeId, left, right, rightAmount, xpCost, keepMaterial, materialDamageTicks,
                 leftContainer, rightContainer, repairAmount, repairAction, refineAll, keepEnchantments, newEnchantments);
     }
 
     @ParametersAreNonnullByDefault
     @Override
     public void write(PacketBuffer buffer, WildcardSmithingRecipe recipe) {
+        recipe.getLeft().write(buffer);
         recipe.getRight().write(buffer);
         buffer.writeInt(recipe.getRightAmount());
         buffer.writeInt(recipe.getXpCost());

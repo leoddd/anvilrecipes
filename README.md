@@ -82,6 +82,9 @@ If we wanted this recipe to work with all axes, a tag should be used instead.
   "type": "anvilrecipes:wildcardsmithing",
   "input": {
     "xp": 0,
+    "left": {
+      "item": "minecraft:iron_pickaxe"
+    },
     "right": {
       "item": "minecraft:quartz",
       "count": 8
@@ -97,6 +100,10 @@ If we wanted this recipe to work with all axes, a tag should be used instead.
   }
 }
 ```
+You may wonder why there is a left item defined, even though the entire point of wildcardsmithing is not to specify a left ingredient.
+This is to assist recipe mods like JEI, it gives them a viable example to display in the anvil recipe section. Using tags is recommended if the recipe works for a lot of different types of items.
+This is entirely optional, if no left ingredient is specified it will not be displayed.
+
 ``newEnchantments``, as the name implies, defines which enchantments to apply to the item, if possible.
 In this case, using 8 quartz on any item that can be enchanted with *Unbreaking II* will apply the enchantment to it.
 Thanks to ``keepEnchantments``, existing enchantments on the left ingredient are copied over.

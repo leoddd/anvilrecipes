@@ -47,6 +47,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
 import java.util.Map;
 
+
+//TODO: Datagen
 @Mod(AnvilRecipeImplementation.MODID)
 public class AnvilRecipeImplementation {
     public static final String MODID = "anvilrecipes";
@@ -55,7 +57,7 @@ public class AnvilRecipeImplementation {
     public final IEventBus GAMEBUS = MinecraftForge.EVENT_BUS;
     public final IEventBus MODBUS = FMLJavaModLoadingContext.get().getModEventBus();
 
-    public RecipeManager recipeManager = null;
+    public static Map<ResourceLocation, IAnvilRecipeBase> anvilRecipeMap = new HashMap<>();
 
     public AnvilRecipeImplementation() {
         // Registration and Setup.
@@ -66,7 +68,7 @@ public class AnvilRecipeImplementation {
         //-------------------------------------
 
         // In-game event handling.
-        GAMEBUS.register(new FindRecipeManager());
+        GAMEBUS.register(new RecipeUpdates());
         GAMEBUS.register(new ModifyAnvilContainerLogic());
         GAMEBUS.register(new OnAnvilUpdate());
     }
@@ -74,17 +76,17 @@ public class AnvilRecipeImplementation {
     /**
      * Event subscriber classes
      */
-    public class FindRecipeManager {
+    public static class RecipeUpdates {
         @SubscribeEvent
         @OnlyIn(Dist.DEDICATED_SERVER)
         public void afterServerStart(FMLServerStartedEvent event) {
-            recipeManager = event.getServer().getRecipeManager();
+            anvilRecipeMap = getAnvilRecipesFromRegistry(event.getServer().getRecipeManager());
         }
 
         @SubscribeEvent
         @OnlyIn(Dist.CLIENT)
         public void onRecipesUpdated(RecipesUpdatedEvent event) {
-            recipeManager = event.getRecipeManager();
+            anvilRecipeMap = getAnvilRecipesFromRegistry(event.getRecipeManager());
         }
     }
 
@@ -348,24 +350,14 @@ public class AnvilRecipeImplementation {
     @Nullable
     public IAnvilRecipeBase findMatchingRecipe(ItemStack left, ItemStack right) {
         IAnvilRecipeBase matchingRecipe = null;
-        Map<ResourceLocation, IRecipe<?>> anvilRecipes = getAnvilRecipes();
-        if (anvilRecipes != null) {
-
-            for (final IRecipe<?> genericRecipe : anvilRecipes.values()) {
-                IAnvilRecipeBase anvilRecipe = (IAnvilRecipeBase) genericRecipe;
-
-                if (anvilRecipe.matchesItemStacks(left, right)) {
-                    matchingRecipe = anvilRecipe;
-                    break;
-                }
+        for (IAnvilRecipeBase anvilRecipe : getAnvilRecipes().values()) {
+            if (anvilRecipe.matchesItemStacks(left, right)) {
+                matchingRecipe = anvilRecipe;
+                break;
             }
         }
 
         return matchingRecipe;
-    }
-
-    public RecipeManager getRecipeManager() {
-        return recipeManager;
     }
 
     /**
@@ -429,6 +421,10 @@ public class AnvilRecipeImplementation {
         }
     }
 
+    public static Map<ResourceLocation, IAnvilRecipeBase> getAnvilRecipes() {
+        return anvilRecipeMap;
+    }
+
     /**
      * This method lets you get all recipes of the given type. The existing
      * methods for this require an IInventory, and this allows you to skip that overhead.
@@ -438,9 +434,20 @@ public class AnvilRecipeImplementation {
      * @return A map containing all anvil recipes. This map is immutable
      * and can not be modified.
      */
-    private Map<ResourceLocation, IRecipe<?>> getAnvilRecipes() {
-        final Map<IRecipeType<?>, Map<ResourceLocation, IRecipe<?>>> recipesMap = ObfuscationReflectionHelper.getPrivateValue(RecipeManager.class, getRecipeManager(), "field_199522_d");
-        return recipesMap != null ? recipesMap.get(IAnvilRecipeBase.RECIPETYPE) : null;
+    public static Map<ResourceLocation, IAnvilRecipeBase> getAnvilRecipesFromRegistry(RecipeManager recipeManager) {
+        final Map<IRecipeType<?>, Map<ResourceLocation, IRecipe<?>>> recipeRegistry = ObfuscationReflectionHelper.getPrivateValue(RecipeManager.class, recipeManager, "field_199522_d");
+        if (recipeRegistry == null) return null;
+
+        Map<ResourceLocation, IRecipe<?>> genericRecipeMap = recipeRegistry.get(IAnvilRecipeBase.RECIPETYPE);
+        Map<ResourceLocation, IAnvilRecipeBase> newAnvilRecipeMap = new HashMap<>();
+
+        for (Map.Entry<ResourceLocation, IRecipe<?>> recipeEntry : genericRecipeMap.entrySet()) {
+            if (recipeEntry.getValue() instanceof IAnvilRecipeBase) {
+                newAnvilRecipeMap.put(recipeEntry.getKey(), (IAnvilRecipeBase) recipeEntry.getValue());
+            }
+        }
+
+        return newAnvilRecipeMap;
     }
 
     /**

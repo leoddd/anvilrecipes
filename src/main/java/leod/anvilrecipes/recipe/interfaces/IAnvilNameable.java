@@ -6,6 +6,8 @@ import net.minecraft.util.text.StringTextComponent;
 public interface IAnvilNameable {
     default boolean renameStack(ItemStack originStack, ItemStack targetStack,
                                 String inputName) {
+        if (inputName == null) return false;
+
         String leftDisplayName = originStack.hasDisplayName() ? originStack.getDisplayName().getString() : "";
         String outputDefaultName = targetStack.getDisplayName().getString();
 

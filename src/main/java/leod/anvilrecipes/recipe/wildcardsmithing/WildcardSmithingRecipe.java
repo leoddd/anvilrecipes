@@ -4,7 +4,6 @@ import leod.anvilrecipes.recipe.AbstractAnvilRecipe;
 import leod.anvilrecipes.recipe.additionsmithing.AdditionSmithing;
 import leod.anvilrecipes.recipe.interfaces.*;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
@@ -24,12 +23,16 @@ public class WildcardSmithingRecipe extends AbstractAnvilRecipe
     protected final RepairAction repairAction;
     protected final boolean refineAll;
 
-    public WildcardSmithingRecipe(ResourceLocation id, Ingredient right,
+    public WildcardSmithingRecipe(ResourceLocation id, Ingredient jeiExampleIngredient, Ingredient right,
                                   int rightAmount, int xpCost, boolean keepMaterial,
                                   int materialDamageTicks, ItemStack leftContainer, ItemStack rightContainer,
                                   float repairAmount, RepairAction repairAction, boolean refineAll,
                                   boolean keepEnchantments, EnchantmentMap newEnchantments) {
-        super(id, Ingredient.fromItems(() -> Items.AIR), right, ItemStack.EMPTY, 1, rightAmount, xpCost);
+        super(
+                id, jeiExampleIngredient, right,
+                jeiExampleIngredient.hasNoMatchingItems() ? ItemStack.EMPTY.copy() : jeiExampleIngredient.getMatchingStacks()[0],
+                1, rightAmount, xpCost
+        );
 
         this.keepMaterial = keepMaterial;
         this.materialDamageTicks = materialDamageTicks;
