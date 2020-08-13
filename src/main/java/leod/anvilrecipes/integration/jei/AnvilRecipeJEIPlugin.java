@@ -45,11 +45,6 @@ public class AnvilRecipeJEIPlugin implements IModPlugin {
             List<ItemStack> matchingLeft = Arrays.asList(recipe.getLeft().getMatchingStacks());
             List<ItemStack> matchingRight = Arrays.asList(recipe.getRight().getMatchingStacks());
 
-            // Start 1.15.2 Only, because JEI only pulled the necessary change into 1.16.
-            if (matchingRight.isEmpty())
-                continue;
-            // End 1.15.2 Only
-
             List<ItemStack> leftStacks = new ArrayList<>();
             List<ItemStack> outputStacks = new ArrayList<>();
 
