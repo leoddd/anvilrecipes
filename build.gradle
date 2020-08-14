@@ -14,17 +14,16 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '2.0.0'
+version = '2.1.0'
 group = 'its.leod.anvilrecipes'
 archivesBaseName = 'anvilrecipes'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-
     mappings channel: 'snapshot', version: '20200723-1.16.1'
-    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
-    
+
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     runs {
@@ -32,10 +31,11 @@ minecraft {
             workingDirectory project.file('run')
 
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                anvilrecipes {
+                examplemod {
                     source sourceSets.main
                 }
             }
@@ -45,10 +45,11 @@ minecraft {
             workingDirectory project.file('run')
 
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                anvilrecipes {
+                examplemod {
                     source sourceSets.main
                 }
             }
@@ -58,12 +59,13 @@ minecraft {
             workingDirectory project.file('run')
 
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
             property 'forge.logging.console.level', 'debug'
 
-            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/')
+            args '--mod', 'anvilrecipes', '--all', '--output', file('src/generated/resources/')
 
             mods {
-                anvilrecipes {
+                examplemod {
                     source sourceSets.main
                 }
             }
@@ -85,10 +87,10 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.1-32.0.108'
+    minecraft 'net.minecraftforge:forge:1.16.2-33.0.3'
 
-    compileOnly fg.deobf("mezz.jei:jei-1.16.1:7.0.1.10:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.16.1:7.0.1.10")
+    compileOnly fg.deobf("mezz.jei:jei-1.16.2:7.1.0.11:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.16.2:7.1.0.11")
 
     // You may put jars on which you depend on in ./libs or you may define them like so..
     // compile "some.group:artifact:version:classifier"
@@ -113,21 +115,18 @@ dependencies {
 jar {
     manifest {
         attributes([
-            "Specification-Title": "anvilrecipes",
-            "Specification-Vendor": "leod",
-            "Specification-Version": "1", // We are version 1 of ourselves
-            "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"leod",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                "Specification-Title"     : "anvilrecipes",
+                "Specification-Vendor"    : "leod",
+                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : "${version}",
+                "Implementation-Vendor"   : "leod",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }
 
-// Example configuration to allow publishing using the maven-publish task
-// This is the preferred method to reobfuscate your jar file
-jar.finalizedBy('reobfJar') 
-// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
+jar.finalizedBy('reobfJar')
 //publish.dependsOn('reobfJar')
 
 publishing {
